@@ -1,0 +1,19 @@
+<div class="site-wrapper">
+	<div class="site-wrapper-inner">
+		<div class="cover-container">
+			<div class="masthead clearfix">
+				<div class="list-group">
+					<a class="list-group-item" *ngFor="let link of links"
+						href="{{link.path}}" target="_blank">{{link.textdescription}}</a>
+				</div>
+				<p class="lead"></p>
+			</div>
+			<div class="mastfoot">
+				<div class="inner">
+					<p>Blockchain Demo</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

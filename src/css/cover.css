@@ -1,0 +1,111 @@
+a {
+	color: rgb(255, 255, 255);
+}
+a:focus {
+	color: rgb(255, 255, 255);
+}
+a:hover {
+	color: rgb(255, 255, 255);
+}
+.btn-secondary {
+	border: 0.05rem solid rgb(255, 255, 255); border-image: none; color: rgb(51, 51, 51); text-shadow: none; background-color: rgb(255, 255, 255);
+}
+.btn-secondary:hover {
+	border: 0.05rem solid rgb(255, 255, 255); border-image: none; color: rgb(51, 51, 51); text-shadow: none; background-color: rgb(255, 255, 255);
+}
+.btn-secondary:focus {
+	border: 0.05rem solid rgb(255, 255, 255); border-image: none; color: rgb(51, 51, 51); text-shadow: none; background-color: rgb(255, 255, 255);
+}
+html {
+	height: 100%; background-color: rgb(51, 51, 51);
+}
+body {
+	height: 100%; background-color: rgb(51, 51, 51);
+}
+body {
+	text-align: center; color: rgb(255, 255, 255); text-shadow: 0px 0.05rem 0.1rem rgba(0,0,0,0.5);
+}
+.site-wrapper {
+	width: 100%; height: 100%; display: table; min-height: 100%; box-shadow: inset 0px 0px 5rem rgba(0,0,0,0.5); -webkit-box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
+}
+.site-wrapper-inner {
+	vertical-align: top; display: table-cell;
+}
+.cover-container {
+	margin-right: auto; margin-left: auto;
+}
+.inner {
+	padding: 2rem;
+}
+.masthead {
+	margin-bottom: 2rem;
+}
+.masthead-brand {
+	margin-bottom: 0px;
+}
+.nav-masthead .nav-link {
+	padding: 0.25rem 0px; color: rgba(255, 255, 255, 0.5); font-weight: bold; border-bottom-color: transparent; border-bottom-width: 0.25rem; border-bottom-style: solid; background-color: transparent;
+}
+.nav-masthead .nav-link:hover {
+	border-bottom-color: rgba(255, 255, 255, 0.25);
+}
+.nav-masthead .nav-link:focus {
+	border-bottom-color: rgba(255, 255, 255, 0.25);
+}
+.nav-masthead .nav-link + .nav-link {
+	margin-left: 1rem;
+}
+.nav-masthead .active {
+	color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);
+}
+@media all and (min-width:48em)
+{
+.masthead-brand {
+	float: left;
+}
+.nav-masthead {
+	float: right;
+}
+}
+.cover {
+	padding: 0px 1.5rem;
+}
+.cover .btn-lg {
+	padding: 0.75rem 1.25rem; font-weight: bold;
+}
+.mastfoot {
+	color: rgba(255, 255, 255, 0.5);
+}
+@media all and (min-width:40em)
+{
+.masthead {
+	top: 0px; position: fixed;
+}
+.mastfoot {
+	bottom: 0px; position: fixed;
+}
+.site-wrapper-inner {
+	vertical-align: middle;
+}
+.masthead {
+	width: 100%;
+}
+.mastfoot {
+	width: 100%;
+}
+.cover-container {
+	width: 100%;
+}
+}
+@media all and (min-width:62em)
+{
+.masthead {
+	width: 42rem;
+}
+.mastfoot {
+	width: 42rem;
+}
+.cover-container {
+	width: 42rem;
+}
+}

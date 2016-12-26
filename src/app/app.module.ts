@@ -2,13 +2,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { Routes, RouterModule,
-    RouterStateSnapshot }   from '@angular/router';
 import { routing }        from './app.routing';
 
 // used to create fake backend
 import { fakeBackendProvider } from './helpers/index';
-import { MockBackend, MockConnection } from '@angular/http/testing';
+import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions } from '@angular/http';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/index';

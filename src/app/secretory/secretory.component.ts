@@ -13,6 +13,6 @@ export class SecretoryComponent implements OnInit {
 
     ngOnInit() {
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        alert(this.currentUser);
+        alert(JSON.stringify(this.currentUser));
     }
 }

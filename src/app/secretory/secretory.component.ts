@@ -8,8 +8,11 @@ import { UserService } from '../services/index';
 })
 
 export class SecretoryComponent implements OnInit {
+    private currentUser: User;
     constructor(private userService: UserService) { }
 
     ngOnInit() {
+        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        alert(this.currentUser);
     }
 }

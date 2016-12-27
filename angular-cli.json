@@ -17,10 +17,14 @@
       "tsconfig": "tsconfig.json",
       "prefix": "app",
       "mobile": false,
-      "styles": [
-        "styles.css"
+      "styles": ["styles.css",
+      "./css/bootstrap.min.css",
+      "./css/cover.css"],
+      "scripts": ["./js/jquery.min.js",
+      "./js/tether.min.js",
+      "./js/bootstrap.min.js",
+      "./js/ie10-viewport-bug-workaround.js"
       ],
-      "scripts": [],
       "environments": {
         "source": "environments/environment.ts",
         "dev": "environments/environment.ts",

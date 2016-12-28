@@ -4,14 +4,25 @@ import { User } from '../models/index';
 import { UserService } from '../services/index';
 
 @Component({
-    templateUrl: 'secretory.component.html'
+    templateUrl: 'secretory.component.html',
+    styleUrls: ['secretory.component.css']
 })
 
 export class SecretoryComponent implements OnInit {
-    private currentUser: User;
+    model: any = {};
+    loading = false;
+    error = '';
     constructor(private userService: UserService) { }
 
     ngOnInit() {
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        this.model.currentUser = JSON.parse(localStorage.getItem('currentUser')).userDetails;
+    }
+
+    createpatient() {
+        this.loading = true;
+        this.error = 'Username or password is incorrect';
+        this.model.currentUser.firstName = 'Hello';
+        alert(this.error);
+        this.loading = false;
     }
 }

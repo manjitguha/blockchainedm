@@ -25,6 +25,7 @@ import { LandingComponent } from './landing.component';
 import { LinkService } from './link.service';
 import { AuthGuard } from './guards/index';
 import { AuthenticationService } from './services/index';
+import { PatientService } from './services/index';
 import { UserService } from './services/index';
 
 
@@ -53,6 +54,7 @@ import { UserService } from './services/index';
         LinkService,
         AuthGuard,
         AuthenticationService,
+        PatientService,
         UserService,
         fakeBackendProvider,
         MockBackend,

@@ -1,7 +1,7 @@
 ﻿import { Component, OnInit } from '@angular/core';
 
 import { User } from '../models/index';
-import { UserService } from '../services/index';
+import { PatientService } from '../services/index';
 
 @Component({
     templateUrl: 'secretory.component.html',
@@ -12,7 +12,7 @@ export class SecretoryComponent implements OnInit {
     model: any = {};
     loading = false;
     error = '';
-    constructor(private userService: UserService) { }
+    constructor(private patientService: PatientService) { }
 
     ngOnInit() {
         this.model.currentUser = JSON.parse(localStorage.getItem('currentUser')).userDetails;
@@ -20,9 +20,19 @@ export class SecretoryComponent implements OnInit {
 
     createpatient() {
         this.loading = true;
-        this.error = 'Username or password is incorrect';
-        this.model.currentUser.firstName = 'Hello';
-        alert(this.error);
+        this.patientService.createPatient(this.model.firstname,
+            this.model.middlename,
+            this.model.lastname,
+            this.model.address,
+            this.model.city,
+            this.model.state,
+            this.model.zip,
+            this.model.gender,
+            this.model.dateofbirth)
+            .subscribe(result => {
+                alert(result);
+            });
+
         this.loading = false;
     }
 }

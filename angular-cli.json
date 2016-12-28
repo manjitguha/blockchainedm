@@ -18,6 +18,7 @@
       "prefix": "app",
       "mobile": false,
       "styles": ["./css/bootstrap.min.css",
+      "./css/bootstrap-theme.min.css",
       "./css/cover.css"],
       "scripts": ["./js/jquery.min.js",
       "./js/tether.min.js",

@@ -27,6 +27,8 @@ import { AuthGuard } from './guards/index';
 import { AuthenticationService } from './services/index';
 import { PatientService } from './services/index';
 import { UserService } from './services/index';
+import { ProviderService } from './services/index';
+import { AppointmentService } from './services/index';
 
 
 @NgModule({
@@ -56,9 +58,11 @@ import { UserService } from './services/index';
         AuthenticationService,
         PatientService,
         UserService,
+        ProviderService,
         fakeBackendProvider,
         MockBackend,
-        BaseRequestOptions],
+        BaseRequestOptions,
+        AppointmentService],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

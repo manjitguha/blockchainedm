@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import { Http, Headers, RequestOptions, Response , URLSearchParams} from '@angular/http';
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map'
 
@@ -13,11 +13,14 @@ export class PatientService {
         private http: Http, private authenticationService: AuthenticationService) {
     }
 
-    getPatients(firstname: string, middlename: string, lastname: string): Observable<Patient[]> {
+    getPatients(): Observable<Patient[]> {
         if (this.authenticationService && this.authenticationService.token) {
-           
+           // add authorization header with jwt token
+            let headers = new Headers({ 'Authorization': 'Bearer ' + this.authenticationService.token });
+            let options = new RequestOptions({ headers: headers });
+
             // get users from api
-            return this.http.post('http://blockchaindemoedm.mybluemix.net/api/patient', JSON.stringify({ firstname: firstname, middlename: middlename, lastname: lastname }))
+            return this.http.get('/api/patients', options)
                 .map((response: Response) => response.json());
         }
         else {
@@ -25,29 +28,17 @@ export class PatientService {
         }
     }
 
-    createPatient(firstname: string,
-        middlename: string,
-        lastname: string,
-        address: string,
-        city: string,
-        state: string,
-        zip: string,
-        gender: string,
-        dateofbirth: string): Observable<Patient> {
-        alert(firstname);
+    getPatientDetail(patientId: string): Observable<Patient> {
         if (this.authenticationService && this.authenticationService.token) {
+           // add authorization header with jwt token
+            let headers = new Headers({ 'Authorization': 'Bearer ' + this.authenticationService.token });
+            let params = new URLSearchParams();
+            params.set('patientId', patientId);
+
+            let options = new RequestOptions({ headers: headers });
+
             // get users from api
-            return this.http.post('http://blockchaindemoedm.mybluemix.net/api/patient', JSON.stringify({
-                firstname: firstname,
-                middlename: middlename,
-                lastname: lastname,
-                address: address,
-                city: city,
-                state: state,
-                zip: zip,
-                gender: gender,
-                dateofbirth: dateofbirth
-            }))
+            return this.http.post('/api/patientDetail',{'patientId':patientId}, options)
                 .map((response: Response) => response.json());
         }
         else {

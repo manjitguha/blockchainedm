@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { Router, CanActivate, ActivatedRouteSnapshot,
     RouterStateSnapshot} from '@angular/router';
 import 'rxjs/add/operator/map'
+import { USERS } from '../helpers/fake-users';
+import { User } from '../models/index';
 
 @Injectable()
 export class AuthenticationService {
@@ -15,46 +17,32 @@ export class AuthenticationService {
         this.token = currentUser && currentUser.token;
     }
 
-    login(username: string, password: string): Observable<boolean> {
+    login(username: string, password: string) {
         console.log('Logging in using ==> username-->'+username+', password-->'+password);
-        return this.http.post('/api/authenticate', JSON.stringify({ username: username, password: password }))
-            .map((response: Response) => {
-                // login successful if there's a jwt token in the response
-                let token = response.json() && response.json().token;
-                if (token) {
-                    // set token property
-                    this.token = token;
+        var userExists = 1;
+        var loggedInUser ;
+                  
+        for (let user in USERS) {
+            // check user credentials and return fake jwt token if valid
+            if (username === USERS[user].username && password === USERS[user].password) {
+                userExists = 0;
+                loggedInUser = USERS[user];
+                break;
+            } 
+        }
+        if (userExists == 0) {
+            // store username and jwt token in local storage to keep user logged in between page refreshes
+            localStorage.setItem('currentUser', 
+                JSON.stringify({ username: username, token: 'fake-jwt-token', 
+                    userDetails: loggedInUser }));
 
-                    // store username and jwt token in local storage to keep user logged in between page refreshes
-                    localStorage.setItem('currentUser', JSON.stringify({ username: username, token: token, userDetails: response.json().loggedIdUser }));
-
-                    // return true to indicate successful login
-                    return true;
-                } else {
-                    // return false to indicate failed login
-                    return false;
-                }
-            });
+            // return true to indicate successful login
+            return true;
+        }
+        else {
+            return false;
+        }
     }
-private extractData(res: Response) {
-        let body = res.json();
-        return body.data || { };
-      }
-
- private handleError (error: Response | any) {
-    // In a real world app, we might use a remote logging infrastructure
-    let errMsg: string;
-    if (error instanceof Response) {
-      const body = error.json() || '';
-      const err = body.error || JSON.stringify(body);
-      errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-    } else {
-      errMsg = error.message ? error.message : error.toString();
-    }
-    console.error(errMsg);
-    return Observable.throw(errMsg);
-  }
-
 
     logout(): void {
         // clear token remove user from local storage to log user out

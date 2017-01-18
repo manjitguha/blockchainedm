@@ -8,8 +8,13 @@ import { UserService } from '../services/index';
 })
 
 export class ProviderComponent implements OnInit {
+ 	model: any = {};
+    loading = false;
+    error = '';
+
     constructor(private userService: UserService) { }
 
     ngOnInit() {
+    	this.model.currentUser = JSON.parse(localStorage.getItem('currentUser')).userDetails;
     }
 }

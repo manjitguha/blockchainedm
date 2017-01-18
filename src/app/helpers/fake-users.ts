@@ -16,7 +16,7 @@ export const USERS: User[] = [
         }
     },
     {
-        username: 'ksierra', password: 'password', firstName: 'Kathy', lastName: 'Sierra', organization: {
+        username: 'fdcosta', password: 'password', firstName: 'Fransis', lastName: 'Dcosta', organization: {
             orgName: 'SAINT FRANCIS MEDICAL GROUP INC',
             orgDescription: 'GROUP PRACTICE',
             homeURL: '/patient'

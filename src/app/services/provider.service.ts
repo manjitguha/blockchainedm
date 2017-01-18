@@ -3,6 +3,7 @@ import { Http, Headers, RequestOptions, Response , URLSearchParams} from '@angul
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map'
 
+import { PROVIDERS } from '../helpers/fake-providers';
 
 import { AuthenticationService } from './authentication.service';
 import { Provider } from '../models/index';
@@ -11,32 +12,28 @@ import { Provider } from '../models/index';
 export class ProviderService {
     constructor(
         private http: Http, private authenticationService: AuthenticationService) {
+           // set token if saved in local storage
+        var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        this.authenticationService.token = currentUser && currentUser.token;
     }
 
-    getProviders(): Observable<Provider[]> {
+    getProviders(): Provider[] {
         if (this.authenticationService && this.authenticationService.token) {
-           // add authorization header with jwt token
-            let headers = new Headers({ 'Authorization': 'Bearer ' + this.authenticationService.token });
-            let options = new RequestOptions({ headers: headers });
-
             // get users from api
-            return this.http.get('/api/providers', options)
-                .map((response: Response) => response.json());
+            return PROVIDERS;
         }
         else {
             return null;
         }
     }
 
-    getProviderDetail(providerId: string): Observable<Provider> {
+    getProviderDetail(providerId: string): Provider {
         if (this.authenticationService && this.authenticationService.token) {
-           // add authorization header with jwt token
-            let headers = new Headers({ 'Authorization': 'Bearer ' + this.authenticationService.token });
-            let options = new RequestOptions({ headers: headers });
-
-            // get users from api
-            return this.http.post('/api/providerDetail',{'providerId':providerId}, options)
-                .map((response: Response) => response.json());
+            for (let providers in PROVIDERS) {
+                if(providerId === PROVIDERS[providers].providerId){
+                    return PROVIDERS[providers]
+                }
+            }
         }
         else {
             return null;

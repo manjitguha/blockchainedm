@@ -1,6 +1,7 @@
 ﻿import { Component, OnInit } from '@angular/core';
 
 import { User } from '../models/index';
+import { Appointment } from '../models/index';
 import { PatientService } from '../services/index';
 import { ProviderService } from '../services/index';
 import { AppointmentService } from '../services/index';
@@ -26,24 +27,27 @@ export class SecretoryComponent implements OnInit {
         this.model.appointmentTimeList = [];
         this.model.appointmentDateList = [];
         this.model.blockchainId = "";
+        this.model.appointmentScheduledMsg = "";
         this.populateTopMessage();
         this.getPatients();
         this.getProviders();
         this.getAppointmentTimeList();
         this.getAppointmentDateList();
-        /*this.appointmentService
+        this.getAppointments();
+        this.appointmentService
                 .fetchUUID()
                 .subscribe(result => {
-                    alert(result);
-                    alert("Blockchain Create");
-                });*/
+                    this.model.blockchainId = result;
+                    console.log("Blockchain ID Created");
+                });
     }
 
     areAllFieldsAvailable(){
         if(this.model.patientSelected 
             && this.model.providerSelected 
             && this.model.appointmentDate 
-            && this.model.appointmentTime){
+            && this.model.appointmentTime
+            && this.model.blockchainId){
             return true;
         }
         else{
@@ -70,14 +74,28 @@ export class SecretoryComponent implements OnInit {
     }
 
     getPatients(){
-        this.patientService.getPatients()
-            .subscribe(result => this.model.patients = result);
+        let patients = this.patientService.getPatients();
+        this.model.patients = patients;
     }
 
     scheduleAppointment(){
         this.loading = true;
         if(this.areAllFieldsAvailable()){
-            
+            let appointment = new Appointment();
+            appointment.appointmentId = this.model.blockchainId;
+            appointment.patient = this.model.selectedPatientDetail;
+            appointment.provider = this.model.selectedProviderDetail;
+            appointment.appointmentDate = this.model.appointmentDate ;
+            appointment.appointmentTime = this.model.appointmentTime;
+            appointment.status = "NEW";
+            appointment.prescriptionNotes = "";
+            appointment.diagnosisNotes = "";
+            this.appointmentService
+                .scheduleAppointment(appointment)
+                .subscribe(result => {
+                    this.model.appointmentScheduledMsg = result;
+                    console.log("Appointment Scheduled");
+                });
         }
         if(this.model.selectedPatientId){
             this.getPatientDetail(this.model.selectedPatientId);
@@ -90,14 +108,12 @@ export class SecretoryComponent implements OnInit {
     }
 
     getPatientDetail(patientId: string){
-        this.patientService.getPatientDetail(patientId)
-            .subscribe(result => {
-                this.model.patients = [];
-                this.model.patients.push(result);
-                this.model.patientSelected = true;
-                this.model.selectedPatientDetail = result;
-                this.populateTopMessage();
-            });
+        let patient = this.patientService.getPatientDetail(patientId);
+        this.model.patients = [];
+        this.model.patients.push(patient);
+        this.model.patientSelected = true;
+        this.model.selectedPatientDetail = patient;
+        this.populateTopMessage();
     }
 
     populateTopMessage(){
@@ -132,18 +148,39 @@ export class SecretoryComponent implements OnInit {
     }
 
     getProviders(){
-        this.providerService.getProviders()
-            .subscribe(result => this.model.providers = result);
+        let providers = this.providerService.getProviders();
+        this.model.providers = providers;
+    }
+
+    getAppointments(){
+        let appointments = this
+                .appointmentService
+                .getAppointments()
+                 .subscribe(result => {
+                    if(result){
+                         this.model.appointments = JSON.parse(result);
+                    } 
+                });
+    }
+    
+    openAppointment(){
+        let appointmentDetails = this
+                .appointmentService
+                .getAppointmentDetails(this.model.selectedAppointmentId, "SECRETARY")
+                 .subscribe(result => {
+                    if(result){
+                         this.model.selectedAppointment = JSON.parse(result);
+                    } 
+                });
+        console.log(this.model.selectedAppointment);
     }
 
     getProviderDetail(providerId: string){
-        this.providerService.getProviderDetail(providerId)
-            .subscribe(result => {
-                this.model.providers = [];
-                this.model.providers.push(result);
-                this.model.providerSelected = true;
-                this.model.selectedProviderDetail = result;
-                this.populateTopMessage();
-            });
+        let provider = this.providerService.getProviderDetail(providerId);
+        this.model.providers = [];
+        this.model.providers.push(provider);
+        this.model.providerSelected = true;
+        this.model.selectedProviderDetail = provider;
+        this.populateTopMessage();
     }
 }

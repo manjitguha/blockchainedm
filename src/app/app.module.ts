@@ -5,8 +5,8 @@ import { HttpModule } from '@angular/http';
 import { routing }        from './app.routing';
 
 // used to create fake backend
-import { fakeBackendProvider } from './helpers/index';
-import { MockBackend } from '@angular/http/testing';
+//import { fakeBackendProvider } from './helpers/index';
+//import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions } from '@angular/http';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/index';
@@ -59,8 +59,8 @@ import { AppointmentService } from './services/index';
         PatientService,
         UserService,
         ProviderService,
-        fakeBackendProvider,
-        MockBackend,
+       // fakeBackendProvider,
+       // MockBackend,
         BaseRequestOptions,
         AppointmentService],
     bootstrap: [AppComponent]

@@ -5,21 +5,19 @@ import 'rxjs/add/operator/map'
 
 import { AuthenticationService } from './authentication.service';
 import { User } from '../models/index';
-
+import { USERS } from '../helpers/fake-users'
 @Injectable()
 export class UserService {
     constructor(
         private http: Http,
         private authenticationService: AuthenticationService) {
+    	   // set token if saved in local storage
+        var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        this.authenticationService.token = currentUser && currentUser.token;
     }
 
-    getUsers(): Observable<User[]> {
-        // add authorization header with jwt token
-        let headers = new Headers({ 'Authorization': 'Bearer ' + this.authenticationService.token });
-        let options = new RequestOptions({ headers: headers });
-
+    getUsers(): User[] {
         // get users from api
-        return this.http.get('/api/users', options)
-            .map((response: Response) => response.json());
+        return USERS;
     }
 }

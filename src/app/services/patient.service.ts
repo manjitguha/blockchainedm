@@ -3,6 +3,7 @@ import { Http, Headers, RequestOptions, Response , URLSearchParams} from '@angul
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map'
 
+import { PATIENTS } from '../helpers/fake-patients';
 
 import { AuthenticationService } from './authentication.service';
 import { Patient } from '../models/index';
@@ -11,35 +12,28 @@ import { Patient } from '../models/index';
 export class PatientService {
     constructor(
         private http: Http, private authenticationService: AuthenticationService) {
+           // set token if saved in local storage
+        var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        this.authenticationService.token = currentUser && currentUser.token;
     }
 
-    getPatients(): Observable<Patient[]> {
+    getPatients(): Patient[] {
         if (this.authenticationService && this.authenticationService.token) {
-           // add authorization header with jwt token
-            let headers = new Headers({ 'Authorization': 'Bearer ' + this.authenticationService.token });
-            let options = new RequestOptions({ headers: headers });
-
             // get users from api
-            return this.http.get('/api/patients', options)
-                .map((response: Response) => response.json());
+            return PATIENTS;
         }
         else {
             return null;
         }
     }
 
-    getPatientDetail(patientId: string): Observable<Patient> {
+    getPatientDetail(patientId: string): Patient {
         if (this.authenticationService && this.authenticationService.token) {
-           // add authorization header with jwt token
-            let headers = new Headers({ 'Authorization': 'Bearer ' + this.authenticationService.token });
-            let params = new URLSearchParams();
-            params.set('patientId', patientId);
-
-            let options = new RequestOptions({ headers: headers });
-
-            // get users from api
-            return this.http.post('/api/patientDetail',{'patientId':patientId}, options)
-                .map((response: Response) => response.json());
+            for (let patient in PATIENTS) {
+                if(patientId === PATIENTS[patient].patientId){    
+                    return PATIENTS[patient];
+                }
+            }
         }
         else {
             return null;

@@ -3,10 +3,11 @@ import { Http, Headers, RequestOptions, Response , URLSearchParams} from '@angul
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map'
 
-import { PROVIDERS } from '../helpers/fake-providers';
+import { CONSTANTS } from '../helpers/constants';
+
 
 import { AuthenticationService } from './authentication.service';
-import { Provider } from '../models/index';
+import { Provider,Request,Selector ,Condition} from '../models/index';
 
 @Injectable()
 export class ProviderService {
@@ -17,23 +18,34 @@ export class ProviderService {
         this.authenticationService.token = currentUser && currentUser.token;
     }
 
-    getProviders(): Provider[] {
+    getProviders(): Observable<Provider[]> {
         if (this.authenticationService && this.authenticationService.token) {
-            // get users from api
-            return PROVIDERS;
+            let headers = new Headers({ 'Content-Type': 'application/json' });
+            let options = new RequestOptions({ headers: headers });
+
+            return this.http.get(CONSTANTS.providerAllDocsURL, options)
+                .map((response: Response) => {
+                    return response.json().body;
+                });
         }
         else {
             return null;
         }
     }
 
-    getProviderDetail(providerId: string): Provider {
-        if (this.authenticationService && this.authenticationService.token) {
-            for (let providers in PROVIDERS) {
-                if(providerId === PROVIDERS[providers].providerId){
-                    return PROVIDERS[providers]
-                }
-            }
+    getProviderDetail(providerId: string): Observable<Provider[]> {
+       if (this.authenticationService && this.authenticationService.token) {
+            let headers = new Headers({ 'Content-Type': 'application/json' });
+            let options = new RequestOptions({ headers: headers });
+            let request: Request = new Request();
+            request.selector = new Selector();
+            request.selector._id = new Condition();
+            request.selector._id.$eq = providerId;
+            request.fields=[];
+            return this.http.post(CONSTANTS.searchProviderURL,JSON.stringify(request), options)
+                .map((response: Response) => {
+                    return response.json().body;
+                });
         }
         else {
             return null;

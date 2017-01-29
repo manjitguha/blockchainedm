@@ -1,11 +1,15 @@
-﻿import { Injectable } from '@angular/core';
-import { Http, Headers, Response } from '@angular/http';
+import { Injectable } from '@angular/core';
+import { Http, Headers, Response, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 import { Router, CanActivate, ActivatedRouteSnapshot,
     RouterStateSnapshot} from '@angular/router';
 import 'rxjs/add/operator/map'
-import { USERS } from '../helpers/fake-users';
 import { User } from '../models/index';
+import { Request } from '../models/index';
+import { Condition } from '../models/index';
+import { Selector } from '../models/index';
+import { CONSTANTS } from '../helpers/constants';
+
 
 @Injectable()
 export class AuthenticationService {
@@ -17,31 +21,44 @@ export class AuthenticationService {
         this.token = currentUser && currentUser.token;
     }
 
-    login(username: string, password: string) {
+    login(username: string, password: string) : Observable<boolean>{
         console.log('Logging in using ==> username-->'+username+', password-->'+password);
         var userExists = 1;
         var loggedInUser ;
-                  
-        for (let user in USERS) {
-            // check user credentials and return fake jwt token if valid
-            if (username === USERS[user].username && password === USERS[user].password) {
-                userExists = 0;
-                loggedInUser = USERS[user];
-                break;
-            } 
-        }
-        if (userExists == 0) {
-            // store username and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('currentUser', 
-                JSON.stringify({ username: username, token: 'fake-jwt-token', 
-                    userDetails: loggedInUser }));
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
 
-            // return true to indicate successful login
-            return true;
-        }
-        else {
-            return false;
-        }
+
+        let request: Request = new Request();
+        request.selector = new Selector();
+        request.selector.username = new Condition();
+        request.selector.password = new Condition();
+        request.selector.username.$eq = username;
+        request.selector.password.$eq = password;
+
+        console.log(JSON.stringify(request));
+
+        return this.http.post(CONSTANTS.authenticationURL,JSON.stringify(request), options)
+                .map((response: Response) => {
+                // login successful if there's a jwt token in the response
+                let users = response.json() && response.json().body;
+                
+
+                if (users && users.length > 0) {
+                    // set token property
+                    this.token = 'fake-jwt-token';
+
+                    // store username and jwt token in local storage to keep user logged in between page refreshes
+                    localStorage.setItem('currentUser', 
+                        JSON.stringify({ username: username, token:'fake-jwt-token' ,userDetails:users[0] }));
+
+                    // return true to indicate successful login
+                    return true;
+                } else {
+                    // return false to indicate failed login
+                    return false;
+                }
+            });
     }
 
     logout(): void {

@@ -5,7 +5,8 @@ import { UserService } from '../services/index';
 import { AppointmentService } from '../services/index';
 
 @Component({
-    templateUrl: 'patient.component.html'
+    templateUrl: 'patient.component.html',
+    styleUrls: ['patient.component.css']
 })
 
 export class PatientComponent implements OnInit {
@@ -34,7 +35,7 @@ export class PatientComponent implements OnInit {
     openAppointment(){
         let appointmentDetails = this
                 .appointmentService
-                .getAppointmentDetails(this.model.selectedAppointmentId, "SECRETARY")
+                .getAppointmentDetails(this.model.selectedAppointmentId, "PATIENT")
                  .subscribe(result => {
                     if(result){
                          this.model.selectedAppointment = JSON.parse(result);

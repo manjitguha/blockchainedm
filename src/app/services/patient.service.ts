@@ -3,10 +3,14 @@ import { Http, Headers, RequestOptions, Response , URLSearchParams} from '@angul
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map'
 
-import { PATIENTS } from '../helpers/fake-patients';
+import { CONSTANTS } from '../helpers/constants'
 
 import { AuthenticationService } from './authentication.service';
 import { Patient } from '../models/index';
+import { Request } from '../models/index';
+import { Condition } from '../models/index';
+import { Selector } from '../models/index';
+
 
 @Injectable()
 export class PatientService {
@@ -17,23 +21,34 @@ export class PatientService {
         this.authenticationService.token = currentUser && currentUser.token;
     }
 
-    getPatients(): Patient[] {
+    getPatients(): Observable<Patient[]> {
         if (this.authenticationService && this.authenticationService.token) {
-            // get users from api
-            return PATIENTS;
+            let headers = new Headers({ 'Content-Type': 'application/json' });
+            let options = new RequestOptions({ headers: headers });
+
+            return this.http.get(CONSTANTS.patientAllDocsURL, options)
+                .map((response: Response) => {
+                    return response.json().body;
+                });
         }
         else {
             return null;
         }
     }
 
-    getPatientDetail(patientId: string): Patient {
+    getPatientDetail(patientId: string): Observable<Patient[]> {
         if (this.authenticationService && this.authenticationService.token) {
-            for (let patient in PATIENTS) {
-                if(patientId === PATIENTS[patient].patientId){    
-                    return PATIENTS[patient];
-                }
-            }
+            let headers = new Headers({ 'Content-Type': 'application/json' });
+            let options = new RequestOptions({ headers: headers });
+            let request: Request = new Request();
+            request.selector = new Selector();
+            request.selector._id = new Condition();
+            request.selector._id.$eq = patientId;
+            request.fields=[];
+            return this.http.post(CONSTANTS.patientSearchURL,JSON.stringify(request), options)
+                .map((response: Response) => {
+                    return response.json().body;
+                });
         }
         else {
             return null;

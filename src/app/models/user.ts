@@ -2,10 +2,17 @@
 
 
 export class User {
-    username: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    organization: Organization;
+	_id: string;
+	_rev:  string;
+	username: string;
+	password: string;
+	firstName: string;
+	lastName: string;
+	organization: Organization;
+	orgName:  string;
+	orgDescription:  string;
+	homeURL:  string;
+	docType:  string;
+	parentId:  string;
 }
 

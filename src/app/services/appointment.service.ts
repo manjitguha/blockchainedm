@@ -3,11 +3,16 @@ import { Http, Headers, RequestOptions, Response , URLSearchParams} from '@angul
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
 
+import { BlockChainRequest } from '../models/index';
+import { Params } from '../models/index';
+import { ChainCodeId } from '../models/index';
+import { CTorMessage } from '../models/index';
+
 import { AuthenticationService } from './authentication.service';
 import { ProviderService } from './provider.service';
 import { Provider } from '../models/index';
 import { Appointment } from '../models/index';
-
+import { CONSTANTS } from '../helpers/constants';
 
 @Injectable()
 export class AppointmentService {
@@ -22,39 +27,26 @@ export class AppointmentService {
     scheduleAppointment(appointment: Appointment): Observable<string> {
         if (this.authenticationService && this.authenticationService.token) {
             /*Calling Blockchain*/
-           
-            let request = "{";
-            request += `"jsonrpc": "2.0",`;
-            request += `"method": "invoke",`;
-            request += `"params": {`;
-            request += `"type": 1,`;
-            request += `"chaincodeID": {`;
-            request += `"name": "d533996e1f4e228cd7165782354bce025562c1d4d0dd2abe753509498e2df386135f5dfb7590d87743f3c2c0fc2a240a533a7e45002d0632b6bdcd927efc8cfd"`;
-            request += `},`;
-            request += `"ctorMsg": {`;
-            request += `"function": "upsertAppointment",`;
-            request += `"args": [`;
-            request += `"`+appointment.appointmentId+`",`;
-            request += `"`+appointment.patient.patientId+`",`;
-            request += `"`+appointment.patient.firstname+`",`;
-            request += `"`+appointment.patient.lastname+`",`;
-            request += `"`+appointment.provider.providerId+`",`;
-            request += `"`+appointment.provider.firstname+`",`;
-            request += `"`+appointment.provider.lastname+`",`;
-            request += `"`+appointment.appointmentDate+`[`+appointment.appointmentTime+`]`+`",`;
-            request += `"`+appointment.diagnosisNotes+`",`;
-            request += `"`+appointment.prescriptionNotes+`",`;
-            request += `"`+appointment.status+`"`;
-            request += `]`;
-            request += `},`;
-            request += `"secureContext": "user_type1_0"`;
-            request += `},`;
-            request += `"id": 4`;
-            request += `}`;
-            
-            console.log(request);
+            let request = this.createBlockChainRequest("invoke");   
+            request.params.ctorMsg.function = "upsertAppointment";
+            request.params.ctorMsg.args.push(appointment.appointmentId);
+            request.params.ctorMsg.args.push(appointment.patientId);
+            request.params.ctorMsg.args.push(appointment.providerId);
+            request.params.ctorMsg.args.push(appointment.referralProviderId);
+            request.params.ctorMsg.args.push(appointment.pharmacyId);
+            request.params.ctorMsg.args.push(appointment.secretoryId);
+            request.params.ctorMsg.args.push(appointment.laboratoryId);
+            request.params.ctorMsg.args.push(appointment.appointmentDate);
+            request.params.ctorMsg.args.push(appointment.appointmentTime);
+            request.params.ctorMsg.args.push(appointment.diagnosisNotes);
+            request.params.ctorMsg.args.push(appointment.prescriptionNotes);
+            request.params.ctorMsg.args.push(appointment.laboratoryNotes);
+            request.params.ctorMsg.args.push(appointment.currentlyAssignedTo);
+            request.params.ctorMsg.args.push(appointment.status);
+        
+            console.log(JSON.stringify(request));
 
-            return this.http.post('https://0ec4c0cf5a4e49ef8231e5cb859a2d7c-vp2.us.blockchain.ibm.com:5001/chaincode', request)
+            return this.http.post(CONSTANTS.chaincodeURL, request)
                 .map(this.extractData)
                 .catch(this.handleError);
         }
@@ -65,15 +57,11 @@ export class AppointmentService {
 
     fetchUUID(): Observable<string>{
     	if (this.authenticationService && this.authenticationService.token) {
-          	/*Calling Blockchain*/
-	        let request = "{";
-	        request += `"jsonrpc": "2.0",`;
-	        request += `"method": "query",`;
-	        request += `"params": {`;
-	        request += `"type": 1,`;
-	        request += `"chaincodeID": {`;
-	        request += `"name": "d533996e1f4e228cd7165782354bce025562c1d4d0dd2abe753509498e2df386135f5dfb7590d87743f3c2c0fc2a240a533a7e45002d0632b6bdcd927efc8cfd"},"ctorMsg": {"function": "getUUID","args": []},"secureContext": "user_type1_0"},"id": 5}`;
-	        return this.http.post('https://0ec4c0cf5a4e49ef8231e5cb859a2d7c-vp2.us.blockchain.ibm.com:5001/chaincode', request)
+            let request = this.createBlockChainRequest("query");          	
+            request.params.ctorMsg.function = "getUUID";
+            console.log(JSON.stringify(request));
+              /*Calling Blockchain*/
+	        return this.http.post(CONSTANTS.chaincodeURL, request)
 	            .map(this.extractData)
 	            .catch(this.handleError);
         }
@@ -85,15 +73,27 @@ export class AppointmentService {
     getAppointments(): Observable<string>{
         if (this.authenticationService && this.authenticationService.token) {
               /*Calling Blockchain*/
-            let request = "{";
-            request += `"jsonrpc": "2.0",`;
-            request += `"method": "query",`;
-            request += `"params": {`;
-            request += `"type": 1,`;
-            request += `"chaincodeID": {`;
-            request += `"name": "d533996e1f4e228cd7165782354bce025562c1d4d0dd2abe753509498e2df386135f5dfb7590d87743f3c2c0fc2a240a533a7e45002d0632b6bdcd927efc8cfd"},"ctorMsg": {"function": "getActiveUUIDs","args": []},"secureContext": "user_type1_0"},"id": 5}`;
-            return this.http.post('https://0ec4c0cf5a4e49ef8231e5cb859a2d7c-vp2.us.blockchain.ibm.com:5001/chaincode', 
-                request)
+            let request = `{"jsonrpc": "2.0", "method": "query", "params": {"type": 1,"chaincodeID": {"name": "`;
+            request += CONSTANTS.chaincodeId;
+            request += `"},"ctorMsg": {"function": "getActiveUUIDs","args": []},"secureContext": "user_type1_0"},"id": 5}`;
+            return this.http.post(CONSTANTS.chaincodeURL, request)
+                .map(this.extractData)
+                .catch(this.handleError);
+        }
+        else {
+            return null;
+        }
+    }
+
+    getAppointmentsForId(id: string): Observable<string>{
+        if (this.authenticationService && this.authenticationService.token) {
+            /*Calling Blockchain*/
+            let request = this.createBlockChainRequest("query");              
+            request.params.ctorMsg.function = "getActiveUUIDsForID";
+            request.params.ctorMsg.args.push(id);
+            console.log(JSON.stringify(request));
+           
+            return this.http.post(CONSTANTS.chaincodeURL, request)
                 .map(this.extractData)
                 .catch(this.handleError);
         }
@@ -104,23 +104,11 @@ export class AppointmentService {
 
     getAppointmentDetails(appointmentId: string, role: string): Observable<string>{
         if (this.authenticationService && this.authenticationService.token) {
-              /*Calling Blockchain*/
-            let request = "{";
-            request += `"jsonrpc": "2.0",`;
-            request += `"method": "query",`;
-            request += `"params": {`;
-            request += `"type": 1,`;
-            request += `"chaincodeID": {`;
-            request += `"name": "d533996e1f4e228cd7165782354bce025562c1d4d0dd2abe753509498e2df386135f5dfb7590d87743f3c2c0fc2a240a533a7e45002d0632b6bdcd927efc8cfd"},"ctorMsg": {"function": "getAppointment","args": [`;
-            request += `"`;
-            request += role;
-            request += `"`;
-            request += `,`;
-            request += `"`;
-            request += appointmentId;
-            request += `"`;
-            request += `]},"secureContext": "user_type1_0"},"id": 5}`;
-            return this.http.post('https://0ec4c0cf5a4e49ef8231e5cb859a2d7c-vp2.us.blockchain.ibm.com:5001/chaincode', 
+            let request = this.createBlockChainRequest("query");              
+            request.params.ctorMsg.function = "getAppointment";
+            request.params.ctorMsg.args.push(role);
+            request.params.ctorMsg.args.push(appointmentId);
+            return this.http.post(CONSTANTS.chaincodeURL, 
                 request)
                 .map(this.extractData)
                 .catch(this.handleError);
@@ -152,5 +140,21 @@ export class AppointmentService {
         }
         console.error(errMsg);
         return Observable.throw(errMsg);
+    }
+
+    private createBlockChainRequest(method: string){
+        let blockchainRequest: BlockChainRequest = new BlockChainRequest();
+        blockchainRequest.id = 1;
+        blockchainRequest.jsonrpc = "2.0";
+        blockchainRequest.method = method;
+        blockchainRequest.params = new Params();
+        blockchainRequest.params.type = 1;
+        blockchainRequest.params.chaincodeID = new ChainCodeId();
+        blockchainRequest.params.chaincodeID.name = CONSTANTS.chaincodeId;
+        blockchainRequest.params.secureContext = "admin";
+        blockchainRequest.params.ctorMsg = new CTorMessage();
+        blockchainRequest.params.ctorMsg.function = "";
+        blockchainRequest.params.ctorMsg.args = [];
+        return blockchainRequest;
     }
 }

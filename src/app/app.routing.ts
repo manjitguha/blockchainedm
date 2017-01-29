@@ -21,8 +21,7 @@ const appRoutes: Routes = [
     { path: 'patient', component: PatientComponent, canActivate: [AuthGuard] },
     { path: 'payer', component: PayerComponent, canActivate: [AuthGuard] },
     { path: 'lab', component: LabComponent, canActivate: [AuthGuard] },
-    { path: 'noaccess', component: NoAccessComponent, canActivate: [AuthGuard] },
-    { path: '**', redirectTo: '' }
+    { path: 'noaccess', component: NoAccessComponent, canActivate: [AuthGuard] }
 ];
 
 export const routing = RouterModule.forRoot(appRoutes);

@@ -15,6 +15,7 @@
 		<div id="navbar" class="navbar-collapse collapse">
 			<ul class="nav navbar-nav navbar-right">
 				<li class="active"><a>{{model.currentUser.firstName}}&nbsp;{{model.currentUser.lastName}}</a></li>
+				<li class="active"><a>{{model.currentUser.orgName}}</a></li>
 				<li><a class="nav-link active " [routerLink]="['/login']"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></a></li>
 			</ul>
 		</div>
@@ -26,7 +27,60 @@
 <!-- Main component for a primary marketing message or call to action -->
 <div>
 	<div class="tab-content">
-	
+		<form name="form" (ngSubmit)="f.form.valid && scheduleAppointment()"
+						#f="ngForm" novalidate>
+		
+			<div id="appointmentList" class="tab-pane fade  in active provider">
+			<div class="panel panel-success">
+				<div class="panel-heading">Scheduled Appointments</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<select [(ngModel)]="model.selectedAppointmentId" name="selectedAppointmentId" (ngModelChange)="openAppointment()">
+							<option *ngFor="let appointmentId of model.appointments">{{appointmentId}}</option>
+						</select>
+					</div>
+					<div class="form-group" *ngIf="model.selectedAppointment" >
+						<table class="table table-striped secretory"> 
+							<tbody>
+								<tr>
+									<td>Appointment ID:</td><td>{{model.selectedAppointment.appointmentId}}</td>
+								</tr>	
+								<tr *ngIf="model.selectedAppointment.provider">
+									<td>Provider Name:</td><td>{{model.selectedAppointment.provider.firstName}} {{model.selectedAppointment.provider.lastName}}</td>
+								</tr>	
+								<tr *ngIf="model.selectedAppointment.patient">
+									<td>Patient Name:</td><td>{{model.selectedAppointment.patient.firstName}} {{model.selectedAppointment.patient.lastName}}</td>
+								</tr>	
+								<tr>
+									<td>Appointment Time:</td>
+									<td>{{model.selectedAppointment.appointmentTime}}</td>
+								</tr>	
+								<tr>
+									<td>Diagnosis Notes</td>
+									<td>
+									<textarea name="diagnosisNotes" [(ngModel)]="model.selectedAppointment.diagnosisNotes" value="{{model.selectedAppointment.diagnosisNotes}}"></textarea>
+									</td>
+								</tr>	
+								<tr>
+									<td>Prescription Notes</td>
+									<td>
+										<textarea name="prescriptionNotes" [(ngModel)]="model.selectedAppointment.prescriptionNotes" value="{{model.selectedAppointment.prescriptionNotes}}"></textarea>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div id="scheduleAppointmentInBlockChainDiv" class="tab-pane fade in active form-group">
+						<div class="jumbotron secretory" *ngIf="model.selectedAppointment">
+							<button type="submit" class="btn btn-default" aria-label="Left Align" [disabled]="loading">Submit Appointment Smart Contract in IBM Hyperledger Blockchain<span class="glyphicon glyphicon-cloud-upload" aria-hidden="true"></span>
+							</button>
+							Appointment Changed Message: [{{model.appointmentScheduledMsg}}]
+						</div>
+					</div>
+				</div>
+			</div>
+			</div>	
+		</form>
 	</div>
 </div>
 <!-- /container -->

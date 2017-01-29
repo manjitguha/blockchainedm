@@ -3,11 +3,17 @@ import { Patient } from './patient';
 
 export class Appointment {
 	appointmentId:string;
-	provider: Provider;
-	patient: Patient;
+	providerId: string;
+	patientId: string;
+	referralProviderId: string;
+	pharmacyId: string;
+	secretoryId: string;
+	laboratoryId: string;
 	appointmentDate: string;
 	appointmentTime: string;
 	diagnosisNotes: string;
 	prescriptionNotes: string;
+	laboratoryNotes: string;
+	currentlyAssignedTo: string;
 	status: string;
 }

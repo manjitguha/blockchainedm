@@ -29,6 +29,7 @@ import { PatientService } from './services/index';
 import { UserService } from './services/index';
 import { ProviderService } from './services/index';
 import { AppointmentService } from './services/index';
+import { GoogleMapsService } from './services/index';
 
 
 @NgModule({
@@ -59,8 +60,7 @@ import { AppointmentService } from './services/index';
         PatientService,
         UserService,
         ProviderService,
-       // fakeBackendProvider,
-       // MockBackend,
+        GoogleMapsService,
         BaseRequestOptions,
         AppointmentService],
     bootstrap: [AppComponent]

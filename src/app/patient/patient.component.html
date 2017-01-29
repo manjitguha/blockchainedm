@@ -26,7 +26,7 @@
 <!-- Main component for a primary marketing message or call to action -->
 <div>
 	<div class="tab-content">
-	<div id="appointmentList" class="tab-pane fade  in active secretory">
+		<div id="appointmentList" class="tab-pane fade  in active patient">
 			<div class="panel panel-success">
 				<div class="panel-heading">Scheduled Appointments</div>
 				<div class="panel-body">
@@ -36,7 +36,7 @@
 						</select>
 					</div>
 					<div class="form-group" *ngIf="model.selectedAppointment" >
-						<table class="table table-striped secretory"> 
+						<table class="table table-striped patient"> 
 							<tbody>
 								<tr>
 									<td>Appointment ID:</td><td>{{model.selectedAppointment.appointmentId}}</td>

@@ -5,7 +5,10 @@ import 'rxjs/add/operator/map'
 
 import { AuthenticationService } from './authentication.service';
 import { User } from '../models/index';
-import { USERS } from '../helpers/fake-users'
+import { CONSTANTS } from '../helpers/index';
+
+
+
 @Injectable()
 export class UserService {
     constructor(
@@ -16,8 +19,19 @@ export class UserService {
         this.authenticationService.token = currentUser && currentUser.token;
     }
 
-    getUsers(): User[] {
-        // get users from api
-        return USERS;
+    getUsers(): Observable<User[]> {
+     if (this.authenticationService && this.authenticationService.token) {
+            let headers = new Headers({ 'Content-Type': 'application/json' });
+            let options = new RequestOptions({ headers: headers });
+
+            return this.http.get(CONSTANTS.userAllDocsURL, options)
+                .map((response: Response) => {
+                    return response.json().body;
+                });
+        }
+        else {
+            return null;
+        }
+
     }
 }

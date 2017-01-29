@@ -26,7 +26,35 @@
 <!-- Main component for a primary marketing message or call to action -->
 <div>
 	<div class="tab-content">
-	
+		<div id="appointmentList" class="tab-pane fade  in active pharmacy">
+			<div class="panel panel-success">
+				<div class="panel-heading">Scheduled Appointments</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<select [(ngModel)]="model.selectedAppointmentId" name="selectedAppointmentId" (ngModelChange)="openAppointment()">
+							<option *ngFor="let appointmentId of model.appointments">{{appointmentId}}</option>
+						</select>
+					</div>
+					<div class="form-group" *ngIf="model.selectedAppointment" >
+						<table class="table table-striped secretory"> 
+							<tbody>
+								<tr>
+									<td>Appointment ID:</td><td>{{model.selectedAppointment.appointmentId}}</td>
+								</tr>	<tr>
+									<td>Provider Name:</td><td>{{model.selectedAppointment.provider.providerFirstName}} {{model.selectedAppointment.provider.providerLastName}}</td>
+								</tr>	<tr>
+									<td>Patient Name:</td><td>{{model.selectedAppointment.patient.patientFirstName}} {{model.selectedAppointment.patient.patientLastName}}</td>
+									</tr>	<tr>
+									<td>Appointment Time:</td><td>{{model.selectedAppointment.appointmentTime}}</td></tr>	<tr>
+									<td>Diagnosis Notes</td><td>{{model.selectedAppointment.diagnosisNotes}}</td></tr>	<tr>
+									<td>Prescription Notes</td><td>{{model.selectedAppointment.prescriptionNotes}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>	
 	</div>
 </div>
 <!-- /container -->

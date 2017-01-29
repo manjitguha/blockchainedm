@@ -1,0 +1,41 @@
+      /*this.userService.getUsers().subscribe(userresponse=>{
+            for(let user in userresponse){
+                if(userresponse[user].homeURL == '/provider'){
+                    this
+                    .providerService
+                    .getProviderDetail(userresponse[user].parentId)
+                    .subscribe(providerResponse=>{
+                        if(providerResponse 
+                            && providerResponse.length 
+                            && providerResponse.length>0 
+                            && providerResponse[0]._id){
+                        }
+                        else{
+                            console.log(userresponse[user]+" , DNE");
+                        }
+                    }, providerError=>{
+                        console.log("Error");
+                    })
+                }
+                else if (userresponse[user].homeURL == '/patient'){
+                    this
+                    .patientService
+                    .getPatientDetail(userresponse[user].parentId)
+                    .subscribe(patientResponse=>{
+                        if(patientResponse 
+                            && patientResponse.length 
+                            && patientResponse.length>0 
+                            && patientResponse[0]._id){
+                        }
+                        else{
+                            console.log(userresponse[user]+" , DNE");
+                        }
+                    }, providerError=>{
+                        console.log("Error");
+                    })  
+                }
+            }
+        }, error=>{
+            console.error(error);
+        })
+*/
